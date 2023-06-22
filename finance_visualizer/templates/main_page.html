@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+    <figure class="highcharts-figure">
+        <div id="container"></div>
+        <p class="highcharts-description">
+            Описание графика
+        </p>
+    </figure>
+    <script type="text/javascript">
+        Highcharts.chart('container', {
+            chart: {
+                type: 'spline'
+            },
+            title: {
+                text: 'Заголовок графика'
+            },
+            subtitle: {
+                text: 'Дополнительный текст'
+            },
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                accessibility: {
+                    description: 'Months of the year'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Руб'
+                },
+                labels: {
+                    format: '{value}'
+                }
+            },
+            tooltip: {
+                crosshairs: true,
+                shared: true
+            },
+            plotOptions: {
+                spline: {
+                    marker: {
+                        radius: 4,
+                        lineColor: '#666666',
+                        lineWidth: 1
+                    }
+                }
+            },
+            series: [{
+                name: 'Еда',
+                marker: {
+                    symbol: 'square'
+                },
+                data: [523.2, 523.7, 821.7, 1321.9, 180.2, 210.4, 250.0, 260.4, 220.8, 170.5, 120.1, 700.6]
+
+            }, {
+                name: 'Дом',
+                marker: {
+                    symbol: 'diamond'
+                },
+                data: [1000.5, 1000.6, 300.3, 500.9, 1000.5, 1300.5, 1400.5, 140.4, 1100.5, 890.7, 444.7, 200.6]
+            }]
+        });
+
+    </script>
+
+
+<!--    <div>-->
+<!--        {% for column_name in income_data.columns.ravel() %}-->
+<!--        <p>{{ income_data[column_name].tolist() }}</p>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--    <div>-->
+<!--        {% for column_name in expenses_data.columns.ravel() %}-->
+<!--        <p>{{ expenses_data[column_name].tolist() }}</p>-->
+<!--        {% endfor %}-->
+<!--    </div>-->
+{% endblock %}
