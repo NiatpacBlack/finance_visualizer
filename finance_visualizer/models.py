@@ -49,9 +49,15 @@ def create_all_table():
 
 
 def insert_data_in_db(table_name: Literal['income', 'expense'],
-                      data: list[tuple[datetime.date, str, float, str]]) -> None:
-    for el in data:
-        pg_client.insert_in_table(table_name=table_name, date_created=el[0], category=el[1], sum=el[2], comment=el[3])
+                      data: list[dict]) -> None:
+    for row in data:
+        pg_client.insert_in_table(
+            table_name=table_name,
+            date_created=row['Date and time'],
+            category=row['Category'],
+            sum=row['Amount in default currency'],
+            comment=row['Comment']
+        )
 
 
 if __name__ == '__main__':
