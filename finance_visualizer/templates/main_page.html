@@ -45,34 +45,19 @@
                     }
                 }
             },
-            series: [{
-                name: 'Еда',
-                marker: {
-                    symbol: 'square'
+            series: [
+            {% for category, dict_value in report_1_data.items() %}
+                {
+                    name: '{{ category }}',
+                    marker: {
+                        symbol: 'square'
+                    },
+                    data: [{% for number in dict_value.values() %}{{ number }},{% endfor %}]
                 },
-                data: [523.2, 523.7, 821.7, 1321.9, 180.2, 210.4, 250.0, 260.4, 220.8, 170.5, 120.1, 700.6]
-
-            }, {
-                name: 'Дом',
-                marker: {
-                    symbol: 'diamond'
-                },
-                data: [1000.5, 1000.6, 300.3, 500.9, 1000.5, 1300.5, 1400.5, 140.4, 1100.5, 890.7, 444.7, 200.6]
-            }]
+            {% endfor %}
+            ]
         });
 
     </script>
 
-
-<!--    <div>-->
-<!--        {% for column_name in income_data.columns.ravel() %}-->
-<!--        <p>{{ income_data[column_name].tolist() }}</p>-->
-<!--        {% endfor %}-->
-<!--    </div>-->
-<!--    <hr>-->
-<!--    <div>-->
-<!--        {% for column_name in expenses_data.columns.ravel() %}-->
-<!--        <p>{{ expenses_data[column_name].tolist() }}</p>-->
-<!--        {% endfor %}-->
-<!--    </div>-->
 {% endblock %}

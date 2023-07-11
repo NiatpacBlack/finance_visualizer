@@ -1,11 +1,10 @@
-import datetime
 import os
 from dotenv import load_dotenv
 
 from typing import Literal
 
-from db_client.db import PostgresClient
-
+from finance_visualizer.db_client.db import PostgresClient
+from psycopg2.extras import NamedTupleCursor
 
 load_dotenv()
 
@@ -60,9 +59,26 @@ def insert_data_in_db(table_name: Literal['income', 'expense'],
         )
 
 
+def get_data_for_report_1():
+    query = """select date_created, category, sum(i.sum) from 
+        (select to_char(date_created, 'MM') as date_created, category, income.sum from income) as i
+        group by category, date_created
+        order by category, date_created;
+    """
+    with pg_client.db_connect.cursor(cursor_factory=NamedTupleCursor) as cursor:
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+    result = {}
+    for row in data:
+        if row.category not in result:
+            result[row.category] = {
+                '01': 0.0, '02': 0.0, '03': 0.0, '04': 0.0, '05': 0.0, '06': 0.0,
+                '07': 0.0, '08': 0.0, '09': 0.0, '10': 0.0, '11': 0.0, '12': 0.0,
+            }
+        result[row.category][row.date_created] += float(row.sum)
+    return result
+
+
 if __name__ == '__main__':
-    from finance_visualizer.config import FILE_PATH
-    from services import get_income_data, get_expenses_data
     create_all_table()
-    insert_data_in_db('expense', get_expenses_data(FILE_PATH))
-    insert_data_in_db('income', get_income_data(FILE_PATH))
