@@ -1,63 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-    <figure class="highcharts-figure">
-        <div id="container"></div>
-        <p class="highcharts-description">
-            Описание графика
-        </p>
-    </figure>
-    <script type="text/javascript">
-        Highcharts.chart('container', {
-            chart: {
-                type: 'spline'
-            },
-            title: {
-                text: 'Заголовок графика'
-            },
-            subtitle: {
-                text: 'Дополнительный текст'
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                accessibility: {
-                    description: 'Months of the year'
-                }
-            },
-            yAxis: {
-                title: {
-                    text: 'Руб'
-                },
-                labels: {
-                    format: '{value}'
-                }
-            },
-            tooltip: {
-                crosshairs: true,
-                shared: true
-            },
-            plotOptions: {
-                spline: {
-                    marker: {
-                        radius: 4,
-                        lineColor: '#666666',
-                        lineWidth: 1
-                    }
-                }
-            },
-            series: [
-            {% for category, dict_value in report_1_data.items() %}
-                {
-                    name: '{{ category }}',
-                    marker: {
-                        symbol: 'square'
-                    },
-                    data: [{% for number in dict_value.values() %}{{ number }},{% endfor %}]
-                },
-            {% endfor %}
-            ]
-        });
-
-    </script>
-
+    <div class="card-header d-flex justify-content-between">
+        <h2 class="mt-3 px-5">Выберите временной интервал</h2>
+        <div>
+            {{ form.submit }}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <form id="dateForm">
+                {{ form.csrf_token() }}
+                {% for field in form if field.name not in ('csrf_token', 'submit') %}
+                    <div class="my-3 mx-2">
+                        <div class="mb-2">{{ field.label() }}</div>
+                        <div class="input-group input-group-lg">
+                            {{ field }}
+                            <span class="input-group-text shadow"
+                                  id="basic-addon2">{{ field.description }}</span>
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
 {% endblock %}

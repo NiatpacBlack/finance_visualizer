@@ -23,7 +23,7 @@ TEMPLATES_DIR = os.path.join(_basedir, "templates")
 # Folder for static files
 STATIC_DIR = os.path.join(_basedir, "static")
 
-FILE_PATH = f'{STATIC_DIR}/2023_07_12_00_02_57_811749.xlsx'
+FILE_PATH = f'{STATIC_DIR}/2023_07_21_16_49_46_524045.xlsx'
 
 
 class FlaskConfig:
