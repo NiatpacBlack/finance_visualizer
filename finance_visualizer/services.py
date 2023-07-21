@@ -37,5 +37,6 @@ def _convert_str_date_to_datetime(data: list[dict]) -> list[dict]:
 
 if __name__ == '__main__':
     from finance_visualizer.config import FILE_PATH
-    print(get_income_data(FILE_PATH))
-    print(get_expenses_data(FILE_PATH))
+    from finance_visualizer.models import insert_data_in_db
+    insert_data_in_db('income', get_income_data(FILE_PATH))
+    insert_data_in_db('expense', get_expenses_data(FILE_PATH))

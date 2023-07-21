@@ -1,0 +1,62 @@
+<figure class="highcharts-figure">
+    <div id="container">
+        <div id="report_1">
+            <p class="highcharts-description"></p>
+            <hr>
+        </div>
+    </div>
+
+</figure>
+<script type="text/javascript">
+    Highcharts.chart('report_1', {
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: '№1 Доход по месяцам'
+        },
+        subtitle: {
+            text: '___'
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            accessibility: {
+                description: 'Months of the year'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Руб'
+            },
+            labels: {
+                format: '{value}'
+            }
+        },
+        tooltip: {
+            crosshairs: true,
+            shared: true
+        },
+        plotOptions: {
+            spline: {
+                marker: {
+                    radius: 4,
+                    lineColor: '#666666',
+                    lineWidth: 1
+                }
+            }
+        },
+        series: [
+        {% for category, dict_value in report_1_data.items() %}
+            {
+                name: '{{ category }}',
+                marker: {
+                    symbol: 'square'
+                },
+                data: [{% for number in dict_value.values() %}{{ number }},{% endfor %}]
+            },
+        {% endfor %}
+        ]
+    });
+
+</script>
