@@ -1,10 +1,11 @@
+"""This file contains the logic of interaction between the application and the database."""
 import os
 from dotenv import load_dotenv
 
 from typing import Literal
 
 from finance_visualizer.db_client.db import PostgresClient
-from psycopg2.extras import NamedTupleCursor
+
 
 load_dotenv()
 
@@ -59,48 +60,24 @@ def insert_data_in_db(table_name: Literal['income', 'expense'],
         )
 
 
-def get_data_for_report_1(request_data: dict):
-    query = f"""select date_created, category, sum(i.sum) from 
-        (select to_char(date_created, 'MM') as date_created, category, income.sum from income
-        where date_created >= '{request_data['date_from']}' and date_created <= '{request_data['date_for']}') as i
-        group by category, date_created
-        order by category, date_created;
-    """
-    with pg_client.db_connect.cursor(cursor_factory=NamedTupleCursor) as cursor:
-        cursor.execute(query)
-        data = cursor.fetchall()
-
-    result = {}
+def insert_monefy_data_in_db(data: list[dict]) -> None:
     for row in data:
-        if row.category not in result:
-            result[row.category] = {
-                '01': 0.0, '02': 0.0, '03': 0.0, '04': 0.0, '05': 0.0, '06': 0.0,
-                '07': 0.0, '08': 0.0, '09': 0.0, '10': 0.0, '11': 0.0, '12': 0.0,
-            }
-        result[row.category][row.date_created] += float(row.sum)
-    return result
-
-
-def get_data_for_report_2(request_data: dict):
-    query = f"""select date_created, category, sum(e.sum) from 
-        (select to_char(date_created, 'MM') as date_created, category, expense.sum from expense
-        where date_created >= '{request_data['date_from']}' and date_created <= '{request_data['date_for']}') as e
-        group by category, date_created
-        order by category, date_created;
-    """
-    with pg_client.db_connect.cursor(cursor_factory=NamedTupleCursor) as cursor:
-        cursor.execute(query)
-        data = cursor.fetchall()
-
-    result = {}
-    for row in data:
-        if row.category not in result:
-            result[row.category] = {
-                '01': 0.0, '02': 0.0, '03': 0.0, '04': 0.0, '05': 0.0, '06': 0.0,
-                '07': 0.0, '08': 0.0, '09': 0.0, '10': 0.0, '11': 0.0, '12': 0.0,
-            }
-        result[row.category][row.date_created] += float(row.sum)
-    return result
+        if row['amount'] > 0:
+            pg_client.insert_in_table(
+                table_name='income',
+                date_created=row['date'],
+                category=row['category'],
+                sum=row['amount'],
+                comment=row['description']
+            )
+        if row['amount'] < 0:
+            pg_client.insert_in_table(
+                table_name='expense',
+                date_created=row['date'],
+                category=row['category'],
+                sum=abs(row['amount']),
+                comment=row['description']
+            )
 
 
 if __name__ == '__main__':
